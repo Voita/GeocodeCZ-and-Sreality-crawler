@@ -11,7 +11,7 @@ import tqdm
 #load api key for ggoogle api
 import apicka as api
 
-API = api.API_KEY
+API = api.api
 
 class geoRUIAN:
     '''
@@ -461,15 +461,18 @@ class geoWrapper:
         for i,j in tqdm.tqdm_notebook(self.dataFrame.iterrows()):
             #geocode current row
             # print(j)
-            self.join.joinOne(j)
-
+            out = self.join.joinOne(j)
+            
+            lat = out[0] or np.nan
+            lng = out[1] or np.nan
+            
             #print(fileToScore)
             #assign the value to df
-            self.dataFrame.loc[i,'latitude'] = self.join.lat if self.join.lat else None
-            self.dataFrame.loc[i,'longitude'] = self.join.lng
-            self.dataFrame.loc[i,'methodUsed'] = 'join' if self.join.lat is not None else None
-            self.dataFrame.loc[i,'confidence'] = 1 if self.join.lat is not None else None
-    
+            self.dataFrame.loc[i,'latitude'] = lat 
+            self.dataFrame.loc[i,'longitude'] = lng
+            self.dataFrame.loc[i,'methodUsed'] = 'join' if np.isfinite(lat) else -1
+            self.dataFrame.loc[i,'confidence'] = 1      if np.isfinite(lat) else -1
+            
     def runRuian(self):
         '''
         A wrapper for calling  RUIANs API
@@ -479,7 +482,7 @@ class geoWrapper:
         for i,j in tqdm.tqdm_notebook(self.dataFrame.iterrows()):
 
             #check whether it was not already scored by joinign method
-            if j['methodUsed'] is None :
+            if j['methodUsed'] is None or j['methodUsed'] == np.nan or j['methodUsed'] == -1:
                 #prepare data for call; if data are presented in separated way we have to merge them, Otherwise, use initially provided string
                 self.j=j
                 potentialData =  j[self.join.srccols]
@@ -500,6 +503,9 @@ class geoWrapper:
                 self.dataFrame.loc[i,'longitude'] = res['lon']
                 self.dataFrame.loc[i,'methodUsed'] = 'ruian'
                 self.dataFrame.loc[i,'confidence'] = res['confidenceFlag']
+
+                
+                
                 
     def runGoogle(self):
         '''
@@ -518,18 +524,16 @@ class geoWrapper:
             for i,j in self.dataFrame.iterrows():
 
                 #check whether it was not already scored by joinign method
-                if j['methodUsed'] is None:
+                if j['methodUsed'] is None or j['methodUsed'] == np.nan or j['methodUsed'] == -1:
                     #prepare data for call; if data are presented in separated way we have to merge them, Otherwise, use initially provided string
                     self.j=j
-                    print(j)
-                    print(self.join.srccols)
                     potentialData =  j[self.join.srccols]
-                    print(j)
+                    
                     
                     #generate address String
                     if j['fulladdress']:
                         addString = j['fulladdress']
-                        print("jo")
+                        
                     else:
                         addString = generateAddressString(potentialData)
 
@@ -557,11 +561,6 @@ class geoWrapper:
         self.runRuian()
         
         #google
-        if ggl == True & self.gglAPI == True:
+        if ggl == True:
             self.runGoogle()
-            
-        elif ggl == True & self.gglAPI == False:
-            print('google API not provided. Abort.')
 
-        
- 
