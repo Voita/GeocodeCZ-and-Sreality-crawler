@@ -11,4 +11,6 @@ You will find a Source_geocode_address.ipynb jupyter which serves for testing an
 In addition to this, there is also a parsing script (organized in an identical manner - Source_parse_adress.ipynb, f_parse_adress.py, Run_parse_address.ipynb) that serves to parsing an address into its components (i.e. street, street number, city, zip code).
 
 ## Sreality
-This script downloads and parse data from sreality API. The structure is identical to previous case. Source_... script that serves as dev environment, python script that contains final version of code and run_... that is an example of how to run the function. 
+This script downloads and parse data from sreality API. The structure is identical to previous case. Source_sreality.ipynb script that serves as dev environment, f_sreality.py - python script that contains final version of code and Run_sreality.ipynb that is an example of how to run the function.
+
+Furthermore, you can find a "graphics script" which is a descriptive analytics of data obtained through sreality crawler.
