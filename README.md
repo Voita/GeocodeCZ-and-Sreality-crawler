@@ -13,4 +13,4 @@ In addition to this, there is also a parsing script (organized in an identical m
 ## Sreality
 This script downloads and parse data from sreality API. The structure is identical to previous case. Source_sreality.ipynb script that serves as dev environment, f_sreality.py - python script that contains final version of code and Run_sreality.ipynb that is an example of how to run the function.
 
-Furthermore, you can find a "graphics script" which is a descriptive analytics of data obtained through sreality crawler.
+Furthermore, you can find Sreality_analysis_of_data.ipynb which is a descriptive analytics of data obtained through sreality crawler.
